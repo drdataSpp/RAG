@@ -1,0 +1,39 @@
+info:
+  name: Ollama - /Generate - Temperature Tuning
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{OLLAMA_BASE_URL}}/generate"
+  headers:
+    - name: Accept
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "model": "mistral:7b",
+        "prompt": "What was your last training date?",
+        "system": "You are a friendly AI assistant.",
+        "stream": false,
+        "options": {
+          "num_ctx": 4096,
+          "num_predict": 1024,
+          "temperature": 0
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |-
+  List running models
+  ********************
+  Retrieve a list of models that are currently running
+
+  If this does not bring any result back then run in ps: `ollama run <DOWNLOADED_MODEL_NAME>`

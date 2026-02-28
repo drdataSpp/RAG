@@ -1,0 +1,4 @@
+name: BASE_URL
+variables:
+  - name: OLLAMA_BASE_URL
+    value: http://localhost:11434/api

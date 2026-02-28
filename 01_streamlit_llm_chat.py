@@ -1,6 +1,7 @@
 import streamlit as st
 from langchain_ollama import OllamaLLM
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.messages import HumanMessage, AIMessage
 
 # Page configuration
 st.set_page_config(page_title="Local LLM Chat", layout="wide")
@@ -18,7 +19,7 @@ with st.sidebar:
     st.header("Configuration")
     model = st.selectbox(
         "Select Model",
-        ["llama3", "llama2", "mistral"],
+        ["mistral:7b", "snowflake-arctic-embed2:latest"],
         help="Choose the Ollama model to use"
     )
     temperature = st.slider(
@@ -29,12 +30,18 @@ with st.sidebar:
         help="Lower values make output more focused, higher values more creative"
     )
     st.markdown("---")
+    
+    # Clear chat button
+    if st.button("🗑️ Clear Chat", use_container_width=True):
+        st.session_state.messages = []
+        st.success("Chat cleared! Ready for a new conversation.")
+        st.rerun()
+    
+    st.markdown("---")
     st.info("Make sure Ollama is running locally with the selected model installed.")
 
 # System context
-system_context = """You are an experienced education instructor specializing in technology and computer science. 
-Your role is to explain technical concepts clearly and concisely, breaking down complex ideas into understandable parts. 
-Provide examples when applicable and ensure your explanations are suitable for students at various skill levels."""
+system_context = """You are a helpful assistant. Your role is to explain all general questions that the user asks."""
 
 # Initialize the LLM
 @st.cache_resource
@@ -44,10 +51,26 @@ def get_llm(model_name):
 llm = get_llm(model)
 
 # Create prompt template
+# prompt_template = ChatPromptTemplate.from_messages([
+#     ("system", system_context),
+#     ("human", "{question}")
+# ])
+
 prompt_template = ChatPromptTemplate.from_messages([
     ("system", system_context),
+    MessagesPlaceholder(variable_name="history"),
     ("human", "{question}")
 ])
+
+# Convert session_state messages to LangChain message objects
+def build_history():
+    history = []
+    for msg in st.session_state.messages[:-1]:  # exclude the current message
+        if msg["role"] == "user":
+            history.append(HumanMessage(content=msg["content"]))
+        elif msg["role"] == "assistant":
+            history.append(AIMessage(content=msg["content"]))
+    return history
 
 chain = prompt_template | llm
 
@@ -89,7 +112,10 @@ if prompt := st.chat_input("Ask me anything about technology and learning... (ty
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 try:
-                    response = chain.invoke({"question": prompt})
+                    response = chain.invoke({
+                        "question": prompt,
+                        "history": build_history()
+                    })
                     st.markdown(response)
                     st.session_state.messages.append({"role": "assistant", "content": response})
                 except Exception as e:

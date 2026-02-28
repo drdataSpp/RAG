@@ -1,0 +1,34 @@
+info:
+  name: Ollama - /Generate - Sample Prompt
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{OLLAMA_BASE_URL}}/generate"
+  headers:
+    - name: Accept
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "model": "mistral:7b",
+        "prompt": "Why is the sky blue?",
+        "system": "You are friedly AI assistant that helps people with their general question in a friendly manner.",
+        "stream": false
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |-
+  List running models
+  ********************
+  Retrieve a list of models that are currently running
+
+  If this does not bring any result back then run in ps: `ollama run <DOWNLOADED_MODEL_NAME>`
