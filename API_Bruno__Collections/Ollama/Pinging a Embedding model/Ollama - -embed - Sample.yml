@@ -1,0 +1,32 @@
+info:
+  name: Ollama - /embed - Sample
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{OLLAMA_BASE_URL}}/embed"
+  headers:
+    - name: Accept
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "model": "snowflake-arctic-embed2:latest",
+        "input": "Why is the sky blue?",
+        "dimesion": 256
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |-
+  List running models
+  ********************
+  Retrieve a list of models that are currently running
+
+  If this does not bring any result back then run in ps: `ollama run <DOWNLOADED_MODEL_NAME>`
