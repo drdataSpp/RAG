@@ -1,11 +1,11 @@
 info:
-  name: Ollama - /Generate - Token Tuning
+  name: Ollama - /Generate - Temperature Tuning
   type: http
   seq: 3
 
 http:
   method: POST
-  url: "{{OLLAMA_BASE_URL}}/chat"
+  url: "{{OLLAMA_BASE_URL}}/generate"
   headers:
     - name: Accept
       value: application/json
@@ -14,23 +14,13 @@ http:
     data: |-
       {
         "model": "mistral:7b",
+        "prompt": "What was your last training date?",
+        "system": "You are a friendly AI assistant.",
         "stream": false,
-        "messages": [
-          {
-            "role": "system",
-            "content": "You are a helpful assistant."
-          },
-          {
-            "role": "user",
-            "content": "But why night the color changes?"
-          }
-        ],
         "options": {
           "num_ctx": 4096,
-          "num_predict": 512,
-          "temperature": 0.7,
-          "top_k": 40,
-          "top_p": 0.9
+          "num_predict": 1024,
+          "temperature": 0
         }
       }
   auth: inherit

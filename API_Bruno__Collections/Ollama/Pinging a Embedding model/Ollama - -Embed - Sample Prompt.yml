@@ -1,11 +1,11 @@
 info:
-  name: Ollama - /Generate - Temperature Tuning
+  name: Ollama - /Embed - Sample Prompt
   type: http
-  seq: 4
+  seq: 5
 
 http:
   method: POST
-  url: "{{OLLAMA_BASE_URL}}/generate"
+  url: "{{OLLAMA_BASE_URL}}/embed"
   headers:
     - name: Accept
       value: application/json
@@ -13,15 +13,9 @@ http:
     type: json
     data: |-
       {
-        "model": "mistral:7b",
-        "prompt": "What was your last training date?",
-        "system": "You are a friendly AI assistant.",
-        "stream": false,
-        "options": {
-          "num_ctx": 4096,
-          "num_predict": 1024,
-          "temperature": 0
-        }
+        "model": "snowflake-arctic-embed2:latest",
+        "input": "Why is the sky blue?",
+        "dimensions": 25
       }
   auth: inherit
 

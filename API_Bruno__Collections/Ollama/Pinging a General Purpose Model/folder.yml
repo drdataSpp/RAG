@@ -1,0 +1,7 @@
+info:
+  name: Pinging a General Purpose Model
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
